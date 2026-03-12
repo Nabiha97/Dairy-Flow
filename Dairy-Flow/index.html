@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#1a73e8">
+    <title>Dairy-Flow - With Placeholder Images</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="security/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <style>
+        /* Password Modal Overlay */
+        .password-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .password-modal-overlay.hidden {
+            display: none;
+        }
+
+        .password-modal-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            padding: 48px;
+            width: 100%;
+            max-width: 440px;
+            position: relative;
+        }
+
+    </style>
+    
+</head>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/static/service-worker.js')
+      .then(() => console.log('Service Worker registered'))
+      .catch(err => console.error('SW registration failed:', err));
+  }
+</script>
+<body>
+    <!-- Password Protection Modal -->
+    <div id="passwordModal" class="password-modal-overlay hidden">
+        <div class="password-modal-card">
+            <!-- Setup Password Screen -->
+            <div id="setupScreen" class="hidden">
+                <div class="title-section">
+                    <svg class="lock-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    <h1>Set Your Password</h1>
+                </div>
+                
+                <p class="subtitle">Create a password to access the database and menu. You'll need to enter it each time you visit.</p>
+
+                <form id="setupForm">
+                    <div class="form-field">
+                        <label>Password</label>
+                        <div class="input-container">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                placeholder="Enter your password" 
+                                required
+                            />
+                            <button type="button" class="eye-button" onclick="togglePassword('password')">
+                                <svg class="eye-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Confirm Password</label>
+                        <div class="input-container">
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                placeholder="Re-enter your password" 
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div id="setupError" class="error-message hidden"></div>
+
+                    <button type="submit" class="unlock-button">
+                        Set Password
+                    </button>
+                </form>
+            </div>
+
+            <!-- Login Screen -->
+            <div id="loginScreen" class="hidden">
+                <div class="title-section">
+                    <svg class="lock-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    <h1>Enter Password</h1>
+                </div>
+                
+                <p class="subtitle">This page is protected. Please enter your password to access the database and menu.</p>
+
+                <form id="loginForm">
+                    <div class="form-field">
+                        <label>Password</label>
+                        <div class="input-container">
+                            <input 
+                                type="password" 
+                                id="loginPassword" 
+                                placeholder="Enter your password" 
+                                required
+                                autofocus
+                            />
+                            <button type="button" class="eye-button" onclick="togglePassword('loginPassword')">
+                                <svg class="eye-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="loginError" class="error-message hidden"></div>
+
+                    <button type="submit" class="unlock-button">
+                        Unlock
+                    </button>
+
+                    <div class="forgot-link">
+                        <a href="#" onclick="event.preventDefault(); resetPassword();">Forgot password? Reset it here</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hamburger Menu Button -->
+    <button class="hamburger-button" id="hamburgerBtn" aria-label="Open menu">
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+    </button>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar-menu" id="sidebarMenu">
+        <button class="close-button" id="closeBtn" aria-label="Close menu">
+            <span>&times;</span>
+        </button>
+        
+        <div class="sidebar-logo">
+            <div class="logo-circle">
+                <!-- Placeholder Logo -->
+                <img src="logo.png" alt="Dairy Flow Logo" class="logo-img">
+            </div>
+        </div>
+        
+        <p class="sidebar-menu-title">Menu</p>
+        
+        <nav class="sidebar-nav">
+            <a href="#" class="sidebar-link" data-page="production/index.html">Production</a>
+            <a href="#" class="sidebar-link" data-page="sales">Sales</a>
+            <a href="#" class="sidebar-link" data-page="purchase/index.html">Purchases</a>
+            <a href="#" class="sidebar-link" data-page="expences/index.html">Expenses</a>
+            <a href="#" class="sidebar-link" data-page="salaries/salaries/index.html">Salaries</a>
+            <a href="#" class="sidebar-link" data-page="summaries">Total Summaries</a>
+            <a href="#" class="sidebar-link" data-page="balancesheet/index.html">Balance Sheet</a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="landing-page">
+        <!-- Header Section -->
+        <section id="home" class="hero-section">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-content">
+                    <!-- Navigation in the center -->
+                    <nav class="main-nav">
+                        <button class="nav-button" data-scroll="home">Home</button>
+                        <button class="nav-button" data-scroll="about">About Us</button>
+                        <button class="nav-button" data-scroll="contact">Contact Us</button>
+                    </nav>
+                    
+                    <!-- Logo on the right -->
+                    <div class="header-logo">
+                        <div class="logo-circle">
+                            <!-- Placeholder Logo -->
+                            <img src="logo.png" alt="Dairy Flow Logo" class="logo-img">
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Gallery Images -->
+            <div class="gallery-frame">
+                <div class="gallery-item">
+                    <!-- Glass Filled with Milk on Dark/Black Background -->
+                    <img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Fresh pure milk">
+                </div>
+                <div class="gallery-item">
+                    <!-- Fresh Yogurt with Berries -->
+                    <img src="Screenshot 2025-12-13 094938.png" alt="Fresh yogurt">
+                </div>
+                <div class="gallery-item">
+                    <!-- Golden Melted Butter -->
+                    <img src="https://images.unsplash.com/photo-1736752346246-61f4daedfde0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWx0ZWQlMjBidXR0ZXIlMjBnb2xkZW58ZW58MXx8fHwxNzY1NTU3MDU3fDA&ixlib=rb-4.1.0&q=80&w=600" alt="Melted butter">
+                </div>
+            </div>
+
+            <!-- Hero Banner -->
+            <div class="hero-banner">
+                <div class="hero-background">
+                    <!-- Cows Grazing with Beautiful Blue Sky -->
+                    <img src="https://images.unsplash.com/photo-1665105519765-a0ec8e027100?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb3dzJTIwZ3JhemluZyUyMGZpZWxkJTIwYmx1ZSUyMHNreXxlbnwxfHx8fDE3NjU1NTY5MDV8MA&ixlib=rb-4.1.0&q=80&w=1920" alt="Herd of cows grazing in a field with blue sky">
+                </div>
+                
+                <div class="hero-text">
+                    <h1 class="hero-title">Dairy-Flow</h1>
+                    <p class="hero-subtitle">Dairy Flow — Where Freshness Finds Its Way."</p>
+                </div>
+                
+                <!-- Order Online Button -->
+                <div class="order-button-container">
+                    <button class="order-button" id="orderBtn" data-page="Order Page 2/index.html">
+                        Order Online
+                    </button>
+                </div>
+                
+                <!-- Status Indicators -->
+                <div class="status-indicators">
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="about-section">
+            <div class="container">
+                <h2 class="section-title">About Us</h2>
+                
+                <div class="about-intro">
+                    <p class="about-text">
+                        Dairy Flow was established with a simple vision: to deliver pure, fresh, and hygienic milk directly from the farm to your home. What began as a small family-run dairy initiative has now grown into a trusted and responsible dairy brand serving households, retailers, and businesses.
+                        Our focus has always been on quality, transparency, and building a strong connection between farmers and consumers.
+                    </p>
+                    <p class="about-text">
+                        We aim to provide natural, chemical-free, and nutrient-rich dairy products, ensuring that every drop of milk reflects the care and commitment of our team.
+                    </p>
+                </div>
+
+                <div c   lass="mission-section">
+                    <h3 class="subsection-title">Our Mission & Values</h3>
+                    
+                    <div class="values-list">
+                        <div class="value-item">
+                            <span class="bullet-point">•</span>
+                            <div class="value-content">
+                                <h4 class="value-title">Quality First</h4>
+                                <p class="value-text">
+                                    We ensure that every stage from feeding and caring for the cattle to milking, storage, and delivery meets high-quality standards. Cleanliness and proper nutrition of animals are at the heart of our operations.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="value-item">
+                            <span class="bullet-point">•</span>
+                            <div class="value-content">
+                                <h4 class="value-title">Hygiene & Safety</h4>
+                                <p class="value-text">
+                                    Our farm follows strict hygiene practices, regular veterinary care, and modern milking methods to provide safe and pure milk without any adulteration.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="value-item">
+                            <span class="bullet-point">•</span>
+                            <div class="value-content">
+                                <h4 class="value-title">Supporting Farmers</h4>
+                                <p class="value-text">
+                                    We empower local farmers by providing training, fair pricing, and modern techniques to improve cattle health and milk productivity.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="value-item">
+                            <span class="bullet-point">•</span>
+                            <div class="value-content">
+                                <h4 class="value-title">Sustainability</h4>
+                                <p class="value-text">
+                                    Dairy Flow is committed to eco-friendly practices, including proper waste management, use of organic fodder, and promoting a healthy environment for animals and humans.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="practices-section">
+                    <h3 class="subsection-title">Our Farm Practices</h3>
+                    
+                    <p class="practices-intro">
+                        At Dairy Flow, every process is carried out with care and attention:
+                    </p>
+
+                    <div class="practices-grid">
+                        <div class="practice-card">
+                            <h4 class="practice-title">Scientific Feeding</h4>
+                            <p class="practice-text">
+                                Balanced diet including green fodder, dry fodder, and high-quality nutritional supplements.
+                            </p>
+                        </div>
+
+                        <div class="practice-card">
+                            <h4 class="practice-title">Clean & Comfortable Housing</h4>
+                            <p class="practice-text">
+                                Well-ventilated sheds, proper bedding, and hygienic living conditions for animals.
+                            </p>
+                        </div>
+
+                        <div class="practice-card">
+                            <h4 class="practice-title">Modern Milking System</h4>
+                            <p class="practice-text">
+                                We use safe and clean milking methods to avoid contamination.
+                            </p>
+                        </div>
+
+                        <div class="practice-card">
+                            <h4 class="practice-title">Regular Health Check-ups</h4>
+                            <p class="practice-text">
+                                Experienced veterinarians monitor cattle health, vaccinations, and overall well-being.
+                            </p>
+                        </div>
+
+                        <div class="practice-card full-width">
+                            <h4 class="practice-title">Freshness Guaranteed</h4>
+                            <p class="practice-text">
+                                Milk is filtered, cooled, and delivered promptly to ensure maximum freshness and nutrition.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="contact-section">
+            <div class="container">
+                <h2 class="section-title">Contact Us</h2>
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <h3 class="contact-heading">Get In Touch</h3>
+                        <div class="info-list">
+                            <div class="info-item">
+                                <h4 class="info-label">Name</h4>
+                                <p class="info-value">Asim Ahmed bin Haid</p>
+                            </div>
+                            <div class="info-item">
+                                <h4 class="info-label">Address</h4>
+                                <p class="info-value">
+                                    H.no- 18-11-76, Barkas, Hyderabad
+                                </p>
+                            </div>
+                            <div class="info-item">
+                                <h4 class="info-label">Phone</h4>
+                                <p class="info-value">+1 (555) 123-4567</p>
+                            </div>
+                            <div class="info-item">
+                                <h4 class="info-label">Email</h4>
+                                <p class="info-value">info@dairy-flow.com</p>
+                            </div>
+                            <div class="info-item">
+                                <h4 class="info-label">Hours</h4>
+                                <p class="info-value">
+                                    Monday - Friday: 8:00 AM - 6:00 PM<br>
+                                    Saturday: 9:00 AM - 4:00 PM<br>
+                                    Sunday: Closed
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-form-container">
+                        <h3 class="contact-heading">Send Us a Message</h3>
+                        <form class="contact-form" id="contactForm">
+                            <div class="form-group">
+                                <input
+                                    type="text"
+                                    placeholder="Your Name"
+                                    class="form-input"
+                                    required
+                                />
+                            </div>
+                            <div class="form-group">
+                                <input
+                                    type="email"
+                                    placeholder="Your Email"
+                                    class="form-input"
+                                    required
+                                />
+                            </div>
+                            <div class="form-group">
+                                <textarea
+                                    placeholder="Your Message"
+                                    rows="5"
+                                    class="form-textarea"
+                                    required
+                                ></textarea>
+                            </div>
+                            <button type="submit" class="form-submit">
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

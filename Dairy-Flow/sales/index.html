@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SALES - Dairy Flow</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <div class="sales-container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1 class="page-title">SALES - Dairy Flow</h1>
+            <div class="header-buttons">
+                <button class="btn btn-add-customer" id="addCustomerBtn" style="display: none;">
+                    <span>+</span> Add New Customer
+                </button>
+                <button class="btn btn-reset" id="resetBtn">Show All</button>
+                <button class="btn btn-search" id="searchDataBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    Search Data
+                </button>
+                <button class="btn btn-edit-mode" id="editModeBtn">Edit Mode</button>
+                <button class="btn btn-excel" id="excelBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    Excel
+                </button>
+                <button class="btn btn-pdf" id="pdfBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    PDF
+                </button>
+                <button class="btn btn-print" id="printBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
+                    Print
+                </button>
+            </div>
+        </div>
+
+        <!-- Current Date Display -->
+        <div class="current-date-display" id="currentDateDisplay">
+            Viewing Data for: <span id="currentDateValue"></span>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card">
+                <div class="card-label">Total Customers</div>
+                <div class="card-value" id="totalCustomers">0</div>
+            </div>
+            <div class="summary-card">
+                <div class="card-label">Total Amount Due</div>
+                <div class="card-value" id="totalAmountDue">₹0.00</div>
+            </div>
+            <div class="summary-card">
+                <div class="card-label">Total AM Sales</div>
+                <div class="card-value" id="totalAMSales">₹0.00</div>
+            </div>
+            <div class="summary-card">
+                <div class="card-label">Total PM Sales</div>
+                <div class="card-value" id="totalPMSales">₹0.00</div>
+            </div>
+        </div>
+
+        <!-- AM (Morning) Sales Section -->
+        <div class="sales-section">
+            <div class="section-header">
+                <h2>AM (Morning) Sales</h2>
+                <span class="badge-am">AM</span>
+            </div>
+            <div class="table-wrapper">
+                <table class="sales-table">
+                    <thead>
+                        <tr>
+                            <th>SL NO.</th>
+                            <th>DATE</th>
+                            <th>CUSTOMER NAME</th>
+                            <th>LITERS PURCHASED</th>
+                            <th>RPL (₹)</th>
+                            <th>AM QUANTITY (L)</th>
+                            <th>PM QUANTITY (L)</th>
+                            <th>AMOUNT DUE (₹)</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody id="amSalesBody">
+                        <!-- AM Sales rows will be generated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PM (Evening) Sales Section -->
+        <div class="sales-section">
+            <div class="section-header">
+                <h2>PM (Evening) Sales</h2>
+                <span class="badge-pm">PM</span>
+            </div>
+            <div class="table-wrapper">
+                <table class="sales-table">
+                    <thead>
+                        <tr>
+                            <th>SL NO.</th>
+                            <th>DATE</th>
+                            <th>CUSTOMER NAME</th>
+                            <th>LITERS PURCHASED</th>
+                            <th>RPL (₹)</th>
+                            <th>AM QUANTITY (L)</th>
+                            <th>PM QUANTITY (L)</th>
+                            <th>AMOUNT DUE (₹)</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pmSalesBody">
+                        <!-- PM Sales rows will be generated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div class="modal-overlay" id="searchModal" style="display: none;">
+        <div class="modal-content">
+            <h2 class="modal-title">Search Data by Date</h2>
+            <p class="modal-subtitle">Search data from the last 5 years</p>
+            
+            <div class="date-inputs">
+                <div class="input-group-modal">
+                    <label>Date</label>
+                    <input type="number" min="1" max="31" placeholder="DD" id="searchDate" class="date-input">
+                </div>
+                <div class="input-group-modal">
+                    <label>Month</label>
+                    <input type="number" min="1" max="12" placeholder="MM" id="searchMonth" class="date-input">
+                </div>
+                <div class="input-group-modal">
+                    <label>Year</label>
+                    <input type="number" id="searchYear" placeholder="YYYY" class="date-input">
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-cancel" id="cancelSearchBtn">Cancel</button>
+                <button class="btn btn-search" id="confirmSearchBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    Search
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Customer Modal -->
+    <div class="modal-overlay" id="addCustomerModal" style="display: none;">
+        <div class="modal-content modal-large">
+            <h2 class="modal-title">Add New Customer</h2>
+            <p class="modal-subtitle">Enter customer details</p>
+            
+            <div class="form-grid">
+                <div class="input-group-modal">
+                    <label>Customer Name</label>
+                    <input type="text" id="customerName" placeholder="Enter name" class="form-input-modal">
+                </div>
+                <div class="input-group-modal">
+                    <label>Liters Purchased</label>
+                    <input type="number" id="litersPurchased" placeholder="0.00" step="0.01" class="form-input-modal">
+                </div>
+                <div class="input-group-modal">
+                    <label>Rate Per Liter (₹)</label>
+                    <input type="number" id="ratePerLiter" placeholder="0.00" step="0.01" class="form-input-modal">
+                </div>
+                <div class="input-group-modal">
+                    <label>AM Quantity (L)</label>
+                    <input type="number" id="amQuantity" placeholder="0.00" step="0.01" class="form-input-modal">
+                </div>
+                <div class="input-group-modal">
+                    <label>PM Quantity (L)</label>
+                    <input type="number" id="pmQuantity" placeholder="0.00" step="0.01" class="form-input-modal">
+                </div>
+                <div class="input-group-modal">
+                    <label>Sale Type</label>
+                    <select id="saleType" class="form-input-modal">
+                        <option value="AM">AM (Morning)</option>
+                        <option value="PM">PM (Evening)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-cancel" id="cancelAddCustomerBtn">Cancel</button>
+                <input type="date" id="saleDate" />
+                <button class="btn btn-add-customer" id="confirmAddCustomerBtn">Add Customer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

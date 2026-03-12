@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Salaries</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <div class="employee-container">
+        <!-- Add New Employee Section (Hidden by default) -->
+        <div class="add-employee-section" id="addEmployeeSection" style="display: none;">
+            <div class="section-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <h2>Add New Employee</h2>
+            </div>
+            <div class="add-employee-form">
+                <input type="text" id="employeeName" placeholder="Employee Name" class="form-input">
+                <input type="number" id="employeeAmount" placeholder="Amount (₹)" step="0.01" class="form-input">
+                <input type="number" id="employeePaid" placeholder="Paid (₹)" step="0.01" class="form-input">
+                <button class="btn btn-add-employee" id="addEmployeeBtn">Add Employee</button>
+            </div>
+        </div>
+
+        <!-- Current Date Display -->
+        <div class="current-date-display" id="currentDateDisplay">
+            Viewing Data for: <span id="currentDateValue"></span>
+        </div>
+
+        <!-- Employee Salaries Section -->
+        <div class="salaries-section">
+            <div class="salaries-header">
+                <div class="header-left">
+                    <h1>Employee Salaries</h1>
+                    <p class="employee-count" id="employeeCount">0 employees</p>
+                </div>
+                <div class="header-buttons">
+                    <button class="btn btn-search" id="searchDataBtn">
+                        <button id="clearSearchBtn" onclick="clearSearch()" style="display:none;">✕ Show All</button>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        Search Data
+                    </button>
+                    <button class="btn btn-edit-mode" id="editModeBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit Mode
+                    </button>
+                    <button class="btn btn-excel" id="excelBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        Excel
+                    </button>
+                    <button class="btn btn-pdf" id="pdfBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        PDF
+                    </button>
+                    <button class="btn btn-print" id="printBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                            <rect x="6" y="14" width="12" height="8"></rect>
+                        </svg>
+                        Print
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-wrapper">
+                <table class="employee-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>DATE</th>
+                            <th>NAME</th>
+                            <th>AMOUNT (₹)</th>
+                            <th>PAID (₹)</th>
+                            <th>BALANCE (₹)</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTableBody">
+                        <!-- Rows will be dynamically generated -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div class="modal-overlay" id="searchModal" style="display: none;">
+        <div class="modal-content">
+            <h2 class="modal-title">Search Data by Date</h2>
+            <p class="modal-subtitle">Search data from the last 5 years</p>
+            
+            <div class="date-inputs">
+                <div class="input-group-modal">
+                    <label>Date</label>
+                    <input type="number" min="1" max="31" placeholder="DD" id="searchDate" class="date-input">
+                </div>
+                <div class="input-group-modal">
+                    <label>Month</label>
+                    <input type="number" min="1" max="12" placeholder="MM" id="searchMonth" class="date-input">
+                </div>
+                <div class="input-group-modal">
+                    <label>Year</label>
+                    <input type="number" id="searchYear" placeholder="YYYY" class="date-input">
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-cancel" id="cancelSearchBtn">Cancel</button>
+                <button class="btn btn-search" id="confirmSearchBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    Search
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

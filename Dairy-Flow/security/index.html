@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Protected Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading" class="screen">
+        <div class="loading-text">Loading...</div>
+    </div>
+
+    <!-- Setup Password Screen -->
+    <div id="setupScreen" class="screen hidden">
+        <div class="card">
+            <div class="title-section">
+                <svg class="lock-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                <h1>Set Your Password</h1>
+            </div>
+            
+            <p class="subtitle">Create a password to protect this page. You'll need to enter it each time you visit.</p>
+
+            <form id="setupForm">
+                <div class="form-field">
+                    <label>Password</label>
+                    <div class="input-container">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            placeholder="Enter your password" 
+                            required
+                        />
+                        <button type="button" class="eye-button" onclick="togglePassword('password')">
+                            <svg class="eye-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label>Confirm Password</label>
+                    <div class="input-container">
+                        <input 
+                            type="password" 
+                            id="confirmPassword" 
+                            placeholder="Re-enter your password" 
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div id="setupError" class="error-message hidden"></div>
+
+                <button type="submit" class="unlock-button">
+                    Set Password
+                </button>
+
+                <div class="forgot-link">
+                    <a href="#" onclick="event.preventDefault();">Already have a password?</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen hidden">
+        <div class="card">
+            <div class="title-section">
+                <svg class="lock-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                <h1>Enter Password</h1>
+            </div>
+            
+            <p class="subtitle">This page is protected. Please enter your password to continue.</p>
+
+            <form id="loginForm">
+                <div class="form-field">
+                    <label>Password</label>
+                    <div class="input-container">
+                        <input 
+                            type="password" 
+                            id="loginPassword" 
+                            placeholder="Enter your password" 
+                            required
+                            autofocus
+                        />
+                        <button type="button" class="eye-button" onclick="togglePassword('loginPassword')">
+                            <svg class="eye-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="loginError" class="error-message hidden"></div>
+
+                <button type="submit" class="unlock-button">
+                    Unlock
+                </button>
+
+                <div class="forgot-link">
+                    <a href="#" onclick="event.preventDefault(); resetPassword();">Forgot password? Reset it here</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Protected Content Screen -->
+    <div id="contentScreen" class="screen hidden">
+        <div class="content-wrapper">
+            <div class="content-card">
+                <div class="content-header">
+                    <div class="success-section">
+                        <svg class="success-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <h1>Welcome! You're in.</h1>
+                    </div>
+                    <button class="reset-link" onclick="resetPassword()">
+                        Reset Password
+                    </button>
+                </div>
+                
+                <div class="content-area">
+                    <p class="content-text">
+                        This is your protected content area. You've successfully authenticated!
+                    </p>
+                    
+                    <div class="info-panel">
+                        <h2>Protected Content</h2>
+                        <p>
+                            This page is only accessible after entering the correct password.
+                            Your password is securely stored in your browser's local storage.
+                        </p>
+                        <ul class="features">
+                            <li>✓ Password protection active</li>
+                            <li>✓ Data stored locally in your browser</li>
+                            <li>✓ No server-side authentication needed</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

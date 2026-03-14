@@ -18,7 +18,7 @@ document.getElementById('addExpenseForm').addEventListener('submit', async funct
     }
 
     try {
-        const response = await fetch('http://localhost:5000/api/expenses', {
+        const response = await fetch('/api/expenses', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -73,7 +73,7 @@ let highlightedDate = '';
 // ✅ API Functions - FIXED position
 async function fetchExpenses() {
     try {
-        const response = await fetch('http://localhost:5000/api/expenses');
+        const response = await fetch('/api/expenses');
         if (!response.ok) throw new Error('Failed to fetch');
         return await response.json();
     } catch (error) {
@@ -86,7 +86,7 @@ async function saveExpenses(data) {
     try {
         const isEdit = data.id && data.id <= (await fetchExpenses().then(r => r?.length ?? 0));
         const method = 'PUT';  // saveExpenses is only called for edits now
-        const url = `http://localhost:5000/api/expenses/${data.id}`;
+        const url = `/api/expenses/${data.id}`;
 
         const payload = {
             description: data.expenses,
@@ -247,7 +247,7 @@ async function saveEdit(id) {
 
     try {
         // ✅ PUT to real DB id
-        const response = await fetch(`http://localhost:5000/api/expenses/${id}`, {
+        const response = await fetch(`/api/expenses/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -305,7 +305,7 @@ function cancelEdit() {
 async function deleteExpense(id) {
     if (confirm('Are you sure you want to delete this expense?')) {
         try {
-            await fetch(`http://localhost:5000/api/expenses/${id}`, {
+            await fetch(`/api/expenses/${id}`, {
                 method: 'DELETE'
             });
         } catch (error) {

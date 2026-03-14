@@ -1519,7 +1519,7 @@ def manifest():
 
 @app.route('/service-worker.js')
 def service_worker():
-    return send_from_directory('static', 'service-worker.js')
+    return send_from_directory('.', 'service-worker.js')
 
 @app.route('/<path:filename>')
 def serve_static(filename):

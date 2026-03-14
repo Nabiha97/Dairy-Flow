@@ -1,0 +1,372 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: #f0f4f8;
+}
+
+.summary-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 24px;
+    background: white;
+    min-height: 100vh;
+}
+
+/* Page Header */
+.page-header {
+    margin-bottom: 30px;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2563eb;
+    padding-bottom: 12px;
+    border-bottom: 3px solid #2563eb;
+}
+
+/* Summary Header */
+.summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.summary-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2563eb;
+}
+
+.summary-tab svg {
+    stroke: #2563eb;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Buttons */
+.btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-add-row {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-add-row span {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.btn-search {
+    background: #8b5cf6;
+    color: white;
+}
+
+.btn-edit-mode {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-edit-mode.active {
+    background: #4b5563;
+    box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.2);
+}
+
+.btn-excel {
+    background: #10b981;
+    color: white;
+}
+
+.btn-pdf {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-print {
+    background: #374151;
+    color: white;
+}
+
+.btn-cancel {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-delete {
+    background: #ef4444;
+    color: white;
+    padding: 6px 16px;
+    font-size: 13px;
+}
+
+/* Current Date Display */
+.current-date-display {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 20px;
+    padding: 12px;
+    background: #f3f4f6;
+    border-radius: 6px;
+}
+
+/* Summary Content */
+.summary-content {
+    background: white;
+}
+
+.table-wrapper {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Summary Table */
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.table-header-blue {
+    background: #2563eb;
+    color: white;
+}
+
+.table-header-blue th {
+    padding: 16px 20px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.summary-table tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.summary-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+.summary-table td {
+    padding: 16px 20px;
+    font-size: 14px;
+}
+
+.summary-table td:first-child {
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.summary-table td:nth-child(2) {
+    color: #eff4ff;
+}
+
+.text-right {
+    text-align: right !important;
+    font-weight: 600;
+    color: #f5f5f5;
+}
+
+.grand-total-row {
+    background: #2563eb !important;
+    color: white !important;
+}
+
+.grand-total-row td {
+    padding: 18px 20px !important;
+    border-bottom: none !important;
+    font-size: 16px;
+}
+
+.grand-total-row strong {
+    font-weight: 700;
+}
+
+/* Editable Input */
+.editable-input {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.editable-input.description-input {
+    text-align: left;
+}
+
+.editable-input.amount-input {
+    text-align: right;
+}
+
+.editable-input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 32px;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modal-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.modal-subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 24px;
+}
+
+.date-inputs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.input-group-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-group-modal label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.date-input,
+.form-input-modal {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.date-input:focus,
+.form-input-modal:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* Print Styles */
+@media print {
+    .summary-header,
+    .current-date-display {
+        display: none !important;
+    }
+    
+    .summary-container {
+        padding: 0;
+    }
+    
+    body {
+        background: white;
+    }
+
+    .summary-table td:last-child,
+    .summary-table th:last-child {
+        display: none;
+    }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .summary-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .action-buttons {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .date-inputs {
+        grid-template-columns: 1fr;
+    }
+}

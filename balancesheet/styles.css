@@ -1,0 +1,413 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    background-color: #f9fafb;
+    padding: 2rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #3b82f6;
+}
+
+.header-left {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+
+.icon-large {
+    width: 32px;
+    height: 32px;
+    color: #3b82f6;
+    margin-top: 0.25rem;
+}
+
+.icon-medium {
+    width: 20px;
+    height: 20px;
+}
+
+.icon-small {
+    width: 16px;
+    height: 16px;
+}
+
+h1 {
+    color: #3b82f6;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.subtitle {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.btn-add {
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-add:hover {
+    background-color: #2563eb;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    justify-content: flex-end;
+}
+
+.btn-action {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 1rem;
+}
+
+.btn-edit {
+    background-color: #6B7A8F;
+}
+
+.btn-edit:hover {
+    background-color: #5a6877;
+}
+
+.btn-excel {
+    background-color: #2ECC71;
+}
+
+.btn-excel:hover {
+    background-color: #27ae60;
+}
+
+.btn-pdf {
+    background-color: #EF5350;
+}
+
+.btn-pdf:hover {
+    background-color: #e53935;
+}
+
+.btn-print {
+    background-color: #3D4A5C;
+}
+
+.btn-print:hover {
+    background-color: #2d3a4a;
+}
+
+/* Search Bar */
+.search-bar {
+    margin-bottom: 1.5rem;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 400px;
+}
+
+.btn-calendar {
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.6rem;
+    border-radius: 6px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-calendar:hover {
+    background-color: #2563eb;
+}
+
+.date-input {
+    flex: 1;
+    padding: 0.6rem 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    transition: border-color 0.2s;
+    color: #374151;
+}
+
+.date-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.btn-clear {
+    background-color: #ef4444;
+    color: white;
+    padding: 0.6rem 0.875rem;
+    border-radius: 6px;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+    font-size: 0.875rem;
+}
+
+.btn-clear:hover {
+    background-color: #dc2626;
+}
+
+/* Table */
+.table-container {
+    overflow-x: auto;
+    margin-bottom: 2rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead tr {
+    background-color: #3b82f6;
+    color: white;
+}
+
+th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+th:last-child {
+    border-right: none;
+}
+
+.th-sno, .th-name {
+    text-align: left;
+}
+
+.th-date {
+    text-align: center;
+    min-width: 120px;
+}
+
+.th-group {
+    text-align: center;
+}
+
+.group-title {
+    margin-bottom: 0.25rem;
+}
+
+.group-headers {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+.group-headers span {
+    flex: 1;
+}
+
+.sub-header {
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+tbody tr {
+    background-color: white;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #eff6ff;
+}
+
+tbody tr.total-row {
+    background-color: #3b82f6;
+    color: white;
+    font-weight: bold;
+}
+
+td {
+    padding: 0.75rem 1rem;
+    text-align: center;
+    border-right: 1px solid #e5e7eb;
+}
+
+tbody tr.total-row td {
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+td:first-child,
+td:nth-child(2) {
+    text-align: left;
+}
+
+td:nth-child(2) {
+    color: #6b7280;
+}
+
+td:last-child {
+    border-right: none;
+}
+
+.value-total {
+    color: #3b82f6;
+}
+
+tbody tr.total-row .value-total {
+    color: white;
+}
+
+.editable {
+    background-color: #f0f9ff;
+}
+
+.editable:hover {
+    background-color: #dbeafe;
+}
+
+.btn-delete {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: color 0.2s;
+}
+
+.btn-delete:hover {
+    color: #dc2626;
+}
+
+.btn-delete i {
+    width: 16px;
+    height: 16px;
+}
+
+/* Summary Cards */
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.summary-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.summary-label {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.summary-value {
+    color: #3b82f6;
+    font-size: 1.875rem;
+    font-weight: 600;
+}
+
+.summary-value.credit {
+    color: #ef4444;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+    
+    .action-buttons {
+        flex-wrap: wrap;
+    }
+    
+    .summary-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Print styles */
+@media print {
+    body {
+        padding: 0;
+        background: white;
+    }
+    
+    .action-buttons,
+    .search-bar,
+    .btn-delete,
+    .btn-add {
+        display: none !important;
+    }
+    
+    .card {
+        box-shadow: none;
+    }
+    
+    table {
+        page-break-inside: auto;
+    }
+    
+    tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+    
+    thead {
+        display: table-header-group;
+    }
+    
+    .summary-cards {
+        page-break-before: avoid;
+    }
+}

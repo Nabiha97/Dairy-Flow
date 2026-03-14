@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expenses - Dairy Flow</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- jsPDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <h1 class="header">
+            <span class="header-gray">Expenses - </span>
+            <span class="header-blue">Dairy Flow</span>
+        </h1>
+
+        <!-- Add Expense Modal -->
+        <div id="addModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Add New Expense</h2>
+                    <button class="close-btn" onclick="closeAddModal()">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+                
+                <form id="addExpenseForm" class="form">
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" id="newDate" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Expense Name</label>
+                        <input type="text" id="newExpense" class="form-input" placeholder="e.g., Milk Procurement" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Total (₹)</label>
+                        <input type="number" step="0.01" id="newTotal" class="form-input" placeholder="0.00" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">MTD (₹)</label>
+                        <input type="number" step="0.01" id="newMTD" class="form-input" placeholder="0.00" required>
+                    </div>
+                    
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-primary">Add Expense</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeAddModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Action Buttons Row -->
+        <div class="action-buttons no-print">
+            <div class="dropdown-container">
+                <button class="btn btn-search" onclick="toggleCalendar()">
+                    <i data-lucide="search"></i>
+                    Search by Date
+                </button>
+                
+                <!-- Calendar Dropdown -->
+                <div id="calendarDropdown" class="calendar-dropdown">
+                    <div class="calendar-header">
+                        <p class="calendar-title">Select Date</p>
+                        <button class="close-btn-small" onclick="toggleCalendar()">
+                            <i data-lucide="x"></i>
+                        </button>
+                    </div>
+                    <input type="date" id="searchDate" class="form-input" onchange="handleDateSearch()">
+                </div>
+            </div>
+            
+            <button class="btn btn-add" onclick="openAddModal()">
+                <i data-lucide="plus"></i>
+                Add Expense
+            </button>
+            
+            <button class="btn btn-edit" id="editModeBtn" onclick="toggleEditMode()">
+                <i data-lucide="edit-3"></i>
+                Edit Mode
+            </button>
+            
+            <button class="btn btn-excel" onclick="exportToExcel()">
+                <i data-lucide="file-down"></i>
+                Excel
+            </button>
+            
+            <button class="btn btn-pdf" onclick="exportToPDF()">
+                <i data-lucide="file-text"></i>
+                PDF
+            </button>
+            
+            <button class="btn btn-print" onclick="handlePrint()">
+                <i data-lucide="printer"></i>
+                Print
+            </button>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card">
+                <p class="summary-label">Total Expenses</p>
+                <p class="summary-value" id="totalExpenses">₹0.00</p>
+            </div>
+            <div class="summary-card">
+                <p class="summary-label">Total MTD</p>
+                <p class="summary-value" id="totalMTD">₹0.00</p>
+            </div>
+            <div class="summary-card">
+                <p class="summary-label">Grand Total</p>
+                <p class="summary-value" id="grandTotal">₹0.00</p>
+            </div>
+        </div>
+
+        <!-- Expense Records Section -->
+        <div class="records-section">
+            <div class="records-header">
+                <h2 class="records-title">Expense Records</h2>
+                <p class="records-count" id="recordsCount">0 expenses</p>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="search-filter no-print">
+                <div class="search-box">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search expenses..." oninput="filterExpenses()">
+                </div>
+                
+                <!-- Clear Filter Button -->
+                <button id="clearFilterBtn" class="btn btn-clear" onclick="clearFilter()" style="display: none;">
+                    <i data-lucide="x"></i>
+                    Clear Filter
+                </button>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+            <table class="expense-table">
+                <thead>
+                    <tr>
+                        <th>S.l No.</th>
+                        <th>Date</th>
+                        <th>Expenses</th>
+                        <th>Total (₹)</th>
+                        <th>MTD (₹)</th>
+                        <th>Grand Total (₹)</th>
+                        <th class="no-print">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="expenseTableBody">
+                    <!-- Table rows will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

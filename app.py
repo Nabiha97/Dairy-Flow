@@ -52,14 +52,14 @@ def test_db():
         return "Database connected successfully!"
     except Exception as e:
         return f"Database connection failed: {str(e)}"
-def get_db_connection():
-    """Create and return a database connection"""
-    try:
-        conn = psycopg2.connect(**DB_CONFIG)
-        return conn
-    except Exception as e:
-        print(f"Error connecting to database: {e}")
-        return None
+# def get_db_connection():
+#     """Create and return a database connection"""
+#     try:
+#         conn = psycopg2.connect(**DB_CONFIG)
+    #     return conn
+    # except Exception as e:
+    #     print(f"Error connecting to database: {e}")
+    #     return None
 
 # ==================== PRODUCTION ENDPOINTS ====================
 

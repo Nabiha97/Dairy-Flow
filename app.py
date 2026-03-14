@@ -24,17 +24,30 @@ from flask_cors import CORS
 CORS(app)
 
 # Database configuration
-DB_CONFIG = {
-    'host': os.getenv('DB_HOST', 'localhost'),
-    'database': os.getenv('DB_NAME', 'dairy_management'),
-    'user': os.getenv('DB_USER', 'postgres'),
-    'password': os.getenv('DB_PASSWORD', 'postgres'),
-    'port': os.getenv('DB_PORT', '5432')
-}
+# Database configuration
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+def get_db_connection():
+    """Create and return a database connection"""
+    try:
+        if DATABASE_URL:
+            conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+        else:
+            conn = psycopg2.connect(
+                host=os.getenv('DB_HOST', 'localhost'),
+                database=os.getenv('DB_NAME', 'dairy_management'),
+                user=os.getenv('DB_USER', 'postgres'),
+                password=os.getenv('DB_PASSWORD', 'postgres'),
+                port=os.getenv('DB_PORT', '5432')
+            )
+        return conn
+    except Exception as e:
+        print(f"Error connecting to database: {e}")
+        return None
 @app.route('/test-db')
 def test_db():
     try:
-        conn = psycopg2.connect(**DB_CONFIG)
+        conn = get_db_connection()
         conn.close()
         return "Database connected successfully!"
     except Exception as e:

@@ -20,7 +20,25 @@ body {
     background: white;
     min-height: 100vh;
 }
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #1a56db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    transition: background 0.2s;
+}
 
+.btn-back:hover {
+    background: #1648c0;
+}
 /* Page Header */
 .page-header {
     margin-bottom: 30px;

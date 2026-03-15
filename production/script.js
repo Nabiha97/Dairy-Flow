@@ -4,6 +4,7 @@ let isEditMode = false;
 let currentDate = getTodayDate();
 let dataHistory = {};
 let isViewingAll = false;
+let buffaloAverages = {};
 
 function getPeakProduction(buffaloId) {
     let peak = 0;
@@ -18,13 +19,15 @@ function getPeakProduction(buffaloId) {
     return peak;
 }
 
-function isProductionDecreased(buffaloId, currentTotal) {
-    const peak = getPeakProduction(buffaloId);
-    return currentTotal < peak * 0.9;
+function isProductionDecreased(buffaloName, currentTotal) {
+    const avg = buffaloAverages[buffaloName];
+    if (!avg || avg <= 0) return false;
+    return currentTotal < avg * 0.9; // 10% below average = alert
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
     dataHistory = await loadDataFromAPI();
+    await loadAverages();
     initializeApp();
     setupEventListeners();
     renderTable();
@@ -250,7 +253,33 @@ function getCurrentBuffaloes() {
     }
     return dataHistory[currentDate].buffaloes;
 }
+async function loadAverages() {
+    try {
+        const res = await fetch('/api/production/get-avg');
+        const data = await res.json();
+        data.forEach(item => {
+            if (item.avg_milk > 0) {
+                buffaloAverages[item.buffalo_name] = item.avg_milk;
+            }
+        });
+    } catch (e) {
+        console.warn('Could not load averages:', e);
+    }
+}
 
+async function setAverage(buffaloName, avg) {
+    buffaloAverages[buffaloName] = avg;
+    try {
+        await fetch('/api/production/set-avg', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ buffalo_name: buffaloName, avg: avg })
+        });
+    } catch (e) {
+        console.warn('Could not save average:', e);
+    }
+    renderTable();
+}
 function clearInputs() {
     document.getElementById('buffaloNameInput').value = '';
     document.getElementById('amLitersInput').value = '';
@@ -351,19 +380,30 @@ function renderTable() {
     buffaloes.forEach((buffalo, index) => {
         const total = calculateTotal(buffalo.am, buffalo.pm);
         const displayDate = formatDateForDisplay(buffalo.date || currentDate);
-        const isDecreased = isProductionDecreased(buffalo.id, total);
-        const peak = getPeakProduction(buffalo.id);
+        const isDecreased = isProductionDecreased(buffalo.name, total);
+        const avg = buffaloAverages[buffalo.name] || 0;
 
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${index + 1}</td>
-            <td>${renderDateCell(buffalo, 'date', displayDate)}</td>
-            <td>${renderCell(buffalo, 'name', buffalo.name, 'name')}</td>
+        <td>${renderDateCell(buffalo, 'date', displayDate)}</td>
+            <td>
+    ${renderCell(buffalo, 'name', buffalo.name, 'name')}
+    ${isEditMode ? `
+        <br><small style="color:#888;">Avg: 
+        <input type="number" step="0.01" 
+               value="${buffaloAverages[buffalo.name] || ''}" 
+               placeholder="Set avg" 
+               style="width:70px; font-size:12px;"
+               onchange="setAverage('${buffalo.name}', parseFloat(this.value))">
+        L</small>` : 
+        (avg > 0 ? `<br><small style="color:#888;">Avg: ${avg.toFixed(2)}L</small>` : '')}
+</td>
             <td>${renderCell(buffalo, 'am', buffalo.am.toFixed(2))}</td>
             <td>${renderCell(buffalo, 'pm', buffalo.pm.toFixed(2))}</td>
             <td class="total-cell ${isDecreased ? 'production-alert' : ''}"
                 style="${isDecreased ? 'background-color: #fee2e2; color: #dc2626; font-weight: bold;' : ''}"
-                title="${isDecreased ? `⚠️ Decreased from peak ${peak.toFixed(2)}L` : ''}">
+                title="${isDecreased ? `⚠️ Below average! Set avg: ${avg.toFixed(2)}L` : ''}">
                 ${total.toFixed(2)}${isDecreased ? ' ⚠️' : ''}
             </td>
             <td>
@@ -451,7 +491,7 @@ function exportToExcel() {
         'PM (Liters)': buffalo.pm,
         'Total (Liters)': calculateTotal(buffalo.am, buffalo.pm).toFixed(2),
         'Peak (Liters)': getPeakProduction(buffalo.id).toFixed(2),
-        'Status': isProductionDecreased(buffalo.id, calculateTotal(buffalo.am, buffalo.pm)) ? '⚠️ DECREASED' : '✅ NORMAL'
+        'Status': isProductionDecreased(buffalo.name, calculateTotal(buffalo.am, buffalo.pm)) ? '⚠️ DECREASED' : ' NORMAL'
     }));
 
     let totalAM = 0;
@@ -499,7 +539,7 @@ function exportToPDF() {
             buffalo.am.toFixed(2),
             buffalo.pm.toFixed(2),
             total.toFixed(2),
-            isProductionDecreased(buffalo.id, total) ? '⚠️ DECREASED' : '✅ NORMAL'
+            isProductionDecreased(buffalo.name, total) ? '⚠️ DECREASED' : ' NORMAL'
         ];
     });
 

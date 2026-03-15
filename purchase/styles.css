@@ -48,14 +48,34 @@ body {
     height: 32px;
     color: #17a2b8;
 }
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 22px;
+    color: #1a56db;
+    padding: 0;
+    margin-bottom: 8px;
+    font-weight: bold;
+    transition: color 0.2s;
+}
 
+.btn-back:hover {
+    color: #1648c0;
+}
 .header-title {
     font-size: 24px;
     font-weight: 600;
     color: #17a2b8;
     margin: 0;
 }
-
+.page-title {
+    font-size: 24px;
+    margin: 0;
+    white-space: nowrap;
+}
 .header-subtitle {
     font-size: 14px;
     color: #6b7280;

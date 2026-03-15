@@ -6,6 +6,7 @@ from flask import make_response
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from datetime import datetime, timedelta
+from flask import send_from_directory
 def parse_date(date_str):
     if date_str:
         return datetime.strptime(date_str, "%Y-%m-%d").date()
@@ -171,7 +172,35 @@ def save_production():
         if conn:
             conn.close()
         return jsonify({'error': str(e)}), 500
-
+@app.route('/api/production/set-avg', methods=['POST'])
+def set_avg():
+    data = request.get_json()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        UPDATE production SET avg_milk = %s 
+        WHERE buffalo_name = %s
+    """, (data['avg'], data['buffalo_name']))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"success": True})
+@app.route('/api/production/get-avg', methods=['GET'])
+def get_avg():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT buffalo_name, MAX(avg_milk) as avg_milk 
+        FROM production 
+        GROUP BY buffalo_name
+    """)
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return jsonify([{
+        "buffalo_name": r[0], 
+        "avg_milk": float(r[1]) if r[1] else 0
+    } for r in rows])
 @app.route('/api/production/<int:production_id>', methods=['PUT', 'DELETE'])
 def update_or_delete_production(production_id):
     """Update or delete a production record"""
@@ -1374,7 +1403,7 @@ def calculate_summary():
         
         return jsonify(dict(summary)), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 50
 
 # ==================== DATA RETENTION ALERTS ENDPOINTS ====================
 
@@ -1511,7 +1540,7 @@ def health_check():
         return jsonify({'status': 'unhealthy', 'database': 'disconnected'}), 500
 @app.route('/')
 def index():
-    return send_from_directory('.', 'index.html')
+    return send_from_directory(os.path.join(BASE_DIR, '..'), 'index.html')
 
 @app.route('/manifest.json')
 def manifest():
@@ -1543,7 +1572,30 @@ def serve_subfolder_file(folder, file):
     if os.path.exists(filepath):
         return send_from_directory(os.path.join(BASE_DIR, folder), file)
     return "Not Found", 404
+@app.route('/api/check-license')
+def check_license():
+    from datetime import date
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT expiry_date, balance FROM app_license LIMIT 1")
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+    expiry = row[0]
+    balance = float(row[1])
+    is_active = expiry >= date.today()
+    return jsonify({
+        "active": is_active,
+        "expiry": str(expiry),
+        "balance": balance
+    })
+@app.route('/lockscreen')
+def lockscreen():
+    return send_from_directory('lockscreen', 'index.html')
 
+@app.route('/lockscreen/<path:filename>')
+def lockscreen_static(filename):
+    return send_from_directory('lockscreen', filename)
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=False, host='0.0.0.0', port=port)

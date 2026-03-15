@@ -1,0 +1,253 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+/* Container */
+.container {
+    width: 100%;
+    max-width: 448px;
+}
+
+.lock-screen {
+    width: 100%;
+}
+
+/* Logo Placeholder */
+.logo-placeholder {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 32px;
+}
+
+.placeholder-circle {
+    width: 96px;
+    height: 96px;
+    background-color: #F3F4F6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #E5E7EB;
+}
+
+/* If you want to use an actual logo image, replace the placeholder-circle div with:
+.logo-placeholder img {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+*/
+
+/* Brand Name */
+.brand-name {
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    color: #111827;
+    margin-bottom: 8px;
+}
+
+/* Lock Icon */
+.lock-icon-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+    margin-top: 24px;
+}
+
+.lock-icon-container svg {
+    width: 64px;
+    height: 64px;
+    padding: 16px;
+    background-color: #EFF6FF;
+    border-radius: 50%;
+}
+
+/* Title */
+.lock-title {
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    color: #111827;
+    margin-bottom: 12px;
+}
+
+/* Messages */
+.lock-message {
+    text-align: center;
+    color: #4B5563;
+    margin-bottom: 8px;
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+.lock-submessage {
+    text-align: center;
+    color: #3B82F6;
+    font-weight: 500;
+    margin-bottom: 32px;
+    font-size: 16px;
+}
+
+/* Balance Card */
+.balance-card {
+    background-color: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.balance-label {
+    color: #4B5563;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.balance-amount {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* Recharge Button */
+.recharge-btn {
+    width: 100%;
+    background-color: #3B82F6;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    margin-bottom: 16px;
+}
+
+.recharge-btn:hover {
+    background-color: #2563EB;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.recharge-btn:active {
+    transform: scale(0.98);
+}
+
+.recharge-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Support Link */
+.support-link {
+    width: 100%;
+    background: none;
+    border: none;
+    color: #4B5563;
+    font-weight: 500;
+    padding: 8px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    font-size: 14px;
+}
+
+.support-link:hover {
+    color: #3B82F6;
+}
+
+/* Footer */
+.footer {
+    margin-top: 48px;
+    text-align: center;
+}
+
+.footer p {
+    font-size: 12px;
+    color: #9CA3AF;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+    body {
+        padding: 16px;
+    }
+
+    .brand-name {
+        font-size: 26px;
+    }
+
+    .lock-title {
+        font-size: 22px;
+    }
+
+    .lock-message,
+    .lock-submessage {
+        font-size: 15px;
+    }
+
+    .balance-card {
+        padding: 16px;
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+
+    .balance-amount {
+        font-size: 22px;
+    }
+
+    .recharge-btn {
+        font-size: 15px;
+        padding: 14px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .placeholder-circle {
+        width: 80px;
+        height: 80px;
+    }
+
+    .placeholder-circle svg {
+        width: 40px;
+        height: 40px;
+    }
+
+    .brand-name {
+        font-size: 24px;
+    }
+
+    .lock-icon-container svg {
+        width: 56px;
+        height: 56px;
+        padding: 12px;
+    }
+
+    .lock-title {
+        font-size: 20px;
+    }
+
+    .lock-message,
+    .lock-submessage {
+        font-size: 14px;
+    }
+}

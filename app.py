@@ -1540,7 +1540,7 @@ def health_check():
         return jsonify({'status': 'unhealthy', 'database': 'disconnected'}), 500
 @app.route('/')
 def index():
-    return send_from_directory(os.path.join(BASE_DIR, '..'), 'index.html')
+    return send_from_directory(BASE_DIR, 'index.html')
 
 @app.route('/manifest.json')
 def manifest():
